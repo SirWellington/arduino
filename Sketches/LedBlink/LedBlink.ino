@@ -1,16 +1,23 @@
 //Communicates with the led on pin 13
+/*
+ * This Sketch Makes an LED Blink a configurable
+ * amount of times. The LED is expected to be wired on the breadboard,
+ * on a PIN # 10, although that can be changed as well.
+ */
 
 int LED = 10;
 int SYSTEM_LED = 13;
 
-void setup() {
+void setup() 
+{
   // put your setup code here, to run once:
   pinMode(LED, OUTPUT);
   pinMode(SYSTEM_LED, OUTPUT);
   turnOff(SYSTEM_LED);
 }
 
-void loop() {
+void loop()
+{
   blink(LED, 2);
   sleep(5);
 }
