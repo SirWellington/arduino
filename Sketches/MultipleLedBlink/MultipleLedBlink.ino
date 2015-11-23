@@ -3,9 +3,9 @@
  * The circuit used with this sketch has a Red, Green, and a Blue
  * LED.
  */
-const int RED = 12;
-const int GREEN = 8;
-const int BLUE = 1;
+const int RED = 11;
+const int GREEN = 10;
+const int BLUE = 3;
 
 const int TOTAL_LEDS = 3;
 const int LEDs [TOTAL_LEDS] = {RED, GREEN, BLUE};

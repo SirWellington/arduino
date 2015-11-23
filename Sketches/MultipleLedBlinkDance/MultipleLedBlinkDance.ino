@@ -2,9 +2,9 @@
  * This Sketch blinks the Red, Green, and Blue LEDS
  * in a particular pattern.
  */
-const int RED = 12;
-const int GREEN = 8;
-const int BLUE = 1;
+const int RED = 11;
+const int GREEN = 10;
+const int BLUE = 3;
 
 const int TOTAL_LEDS = 3;
 const int LEDs [TOTAL_LEDS] = {RED, GREEN, BLUE};
@@ -36,9 +36,9 @@ void blink(int LED, int numberOfTimes)
   for (int i = 0; i < numberOfTimes; ++i)
   {
     turnOn(LED);
-    sleep(0.2);
+    sleep(0.15);
     turnOff(LED);
-    sleep(0.2);
+    sleep(0.15);
   }
 }
 
