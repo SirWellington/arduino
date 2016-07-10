@@ -32,7 +32,7 @@ int minSensorValue = 1025;
 
 long lastCalibrationTime = 0L;
 long calibrationFrequency = secondsToMillis(60);
-long calibrationTime = secondsToMillis(5);
+long calibrationTime = secondsToMillis(10);
 
 void setup() 
 {
@@ -57,7 +57,7 @@ void loop()
 {
   reactToLight();
   
-  long delayTime = secondsToMillis(3);
+  long delayTime = secondsToMillis(1.5);
   delay(delayTime);
 
   if (shouldCalibrate())
@@ -89,16 +89,15 @@ void testLEDs()
 
 void reactToLight()
 {
-  redInput = analogRead(RED_SENSOR);
-  greenInput = analogRead(GREEN_SENSOR);
-  blueInput = analogRead(BLUE_SENSOR);
+  readSensorValues();
+  tuneSensorValues();
 
   String message = "Red: " + String(redInput) + ", Green: " + String(greenInput) + ", Blue: " + String(blueInput);
   Serial.println(message);
 
-  redOutput = map(redInput, minSensorValue, maxSensorValue, 0, 255);
-  blueOutput = map(blueInput, minSensorValue, maxSensorValue, 0, 255);
-  greenOutput = map(greenInput, minSensorValue, maxSensorValue, 0, 255);
+  redOutput = map(redInput, 0, maxSensorValue, 0, 255);
+  blueOutput = map(blueInput, 0, maxSensorValue, 0, 255);
+  greenOutput = map(greenInput, 0, maxSensorValue, 0, 255);
  
   message = "Red Output: " + String(redOutput) + ", Green Output: " + String(greenOutput) + ", Blue Output: " + String(blueOutput);
   Serial.println(message);
@@ -124,18 +123,12 @@ void calibrate(long durationInMillis)
 
   Serial.println("Calibrating Device..."); 
   Serial.println("Current Time: " + String(currentTime) + ", End Time: " + String(endTime));
-
-
-  minSensorValue = 1025;
-  maxSensorValue = 0;
   
   while (currentTime <= endTime)
   {
-    redInput = analogRead(RED_SENSOR);
-
-    minSensorValue = min(minSensorValue, redInput);
-    maxSensorValue = max(maxSensorValue, redInput);
-
+    readSensorValues();
+    tuneSensorValues();
+    
     currentTime = millis();
   }
 
@@ -147,6 +140,19 @@ void calibrate(long durationInMillis)
   
   printBreak();
   
+}
+
+void readSensorValues()
+{
+    redInput = analogRead(RED_SENSOR);
+    greenInput = analogRead(GREEN_SENSOR);
+    blueInput = analogRead(BLUE_SENSOR);
+}
+
+void tuneSensorValues()
+{
+    minSensorValue = minFromValues(4, minSensorValue, redInput, greenInput, blueInput);
+    maxSensorValue = maxFromValues(4, maxSensorValue, redInput, greenInput, blueInput);
 }
 
 //=========================================================
@@ -199,9 +205,8 @@ void turnOff(int count, ...)
   va_end(pins);
 }
 
-int _min(int count, ...)
+int minFromValues(int count, ...)
 {
-
   if (count == 0)
   {
     return 0;
@@ -225,6 +230,33 @@ int _min(int count, ...)
   va_end(values);
   
   return min;
+}
+
+int maxFromValues(int count, ...)
+{
+  if (count == 0)
+  {
+    return 0;
+  }
+  
+  va_list values;
+  va_start(values, count);
+  
+  int max = va_arg(values, int);
+  
+  for (int i = 1; i < count; ++i)
+  {
+      int nextValue = va_arg(values, int);
+
+      if (nextValue > max)
+      {
+        max = nextValue;
+      }
+  }
+
+  va_end(values);
+  
+  return max;
 }
 
 void printBreak()

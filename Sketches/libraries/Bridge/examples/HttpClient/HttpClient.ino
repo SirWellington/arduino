@@ -27,9 +27,9 @@ void setup() {
   Bridge.begin();
   digitalWrite(13, HIGH);
 
-  Serial.begin(9600);
+  SerialUSB.begin(9600);
 
-  while (!Serial); // wait for a serial connection
+  while (!SerialUSB); // wait for a serial connection
 }
 
 void loop() {
@@ -43,9 +43,9 @@ void loop() {
   // from the server, read them and print them:
   while (client.available()) {
     char c = client.read();
-    Serial.print(c);
+    SerialUSB.print(c);
   }
-  Serial.flush();
+  SerialUSB.flush();
 
   delay(5000);
 }
